@@ -8,6 +8,9 @@ TagManager:
   - Obstacle
   - Pickup
   - Shield
+  - PoisonFood
+  - ExtraFood
+  - Speed
   layers:
   - Default
   - TransparentFX

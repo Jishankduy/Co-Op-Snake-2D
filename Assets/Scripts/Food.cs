@@ -3,10 +3,18 @@
 public class Food : MonoBehaviour
 {
     public Collider2D gridArea;
+    private float spawnTime;
+    public float timeBetweenSpawn;
 
-    private void Start()
+    void Update()
     {
-        RandomizePosition();
+        //RandomizePosition();
+        //spawnTime = Time.time;
+        if (Time.time > spawnTime)
+        {
+            RandomizePosition();
+            spawnTime = Time.time + timeBetweenSpawn;
+        }
     }
 
     public void RandomizePosition()

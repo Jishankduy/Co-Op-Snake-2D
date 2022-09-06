@@ -14,6 +14,6 @@ public class LevelRestart : MonoBehaviour
 
     void Reloadlevel(){
             Debug.Log("Reloading Scene ");
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
     }
 }

@@ -16,11 +16,6 @@ public class Snake2 : MonoBehaviour
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
 
-    //private float fixedDeltaTime;
-    
-    //void Awake() {
-     //   this.fixedDeltaTime = Time.fixedDeltaTime;
-   // }
 
     private void Start()
     {
@@ -73,6 +68,16 @@ public class Snake2 : MonoBehaviour
         segments.Add(segment);
     }
 
+    public void LossGrow()
+    {
+        for (int i = 1; i < segments.Count; i++)
+        {
+            Destroy(segments[i].gameObject);
+        }
+        segments.Clear();
+        segments.Add(transform);
+    }
+
     public void ResetState()
     {
         direction = Vector2.right;
@@ -104,13 +109,20 @@ public class Snake2 : MonoBehaviour
         else if (other.gameObject.CompareTag("Obstacle")) {
             ResetState();
         }
+
+        if (other.gameObject.CompareTag("PoisonFood"))
+        {
+            LossGrow();
+            count = count - 1;
+            SetCountText();
+        }
     }
 
     void SetCountText()
     {
         countText.text = " " + count.ToString();
 
-        if (count >= 4)
+        if (count >= 12)
         {
             //Set the text value of your 'winText'
             winTextObject.SetActive(true);

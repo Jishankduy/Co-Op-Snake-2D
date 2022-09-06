@@ -12,9 +12,10 @@ public class Play : MonoBehaviour
         buttonRestast.onClick.AddListener(Reloadlevel);
     }
 
+
     void Reloadlevel(){
             Debug.Log("Reloading Scene ");
             //Scene scene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
     }
 }

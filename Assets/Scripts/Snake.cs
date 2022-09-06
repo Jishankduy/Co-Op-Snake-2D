@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class Snake : MonoBehaviour
@@ -13,9 +15,12 @@ public class Snake : MonoBehaviour
     public int initialSize = 4;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
+    //public float Speed;
+    
 
     private void Start()
     {
+       
         ResetState();
     }
 
@@ -39,6 +44,8 @@ public class Snake : MonoBehaviour
                 direction = Vector2.left;
             }
         }
+        
+        //Time.fixedDeltaTime = 1;
     }
 
     private void FixedUpdate()
@@ -64,6 +71,17 @@ public class Snake : MonoBehaviour
         segment.position = segments[segments.Count - 1].position;
         segments.Add(segment);
     }
+
+    public void LossGrow()
+    {
+        for (int i = 1; i < segments.Count; i++)
+        {
+            Destroy(segments[i].gameObject);
+        }
+        segments.Clear();
+        segments.Add(transform);
+    }
+
 
     public void ResetState()
     {
@@ -95,13 +113,33 @@ public class Snake : MonoBehaviour
         } else if (other.gameObject.CompareTag("Obstacle")) {
             ResetState();
         }
+
+        if (other.gameObject.CompareTag("PoisonFood"))
+        {
+            LossGrow();
+            count = count - 1;
+            SetCountText();
+        }
+
+        if (other.gameObject.CompareTag("ExtraFood"))
+        {
+            Grow();
+            count = count + 3;
+            SetCountText();
+
+        }
+        if (other.gameObject.CompareTag("Speed"))
+        {
+            SpeedUp();
+        }
+
     }
 
     void SetCountText()
     {
         countText.text = " " + count.ToString();
 
-        if (count >= 5)
+        if (count >= 12)
         {
             //Set the text value of your 'winText'
             winTextObject.SetActive(true);
@@ -117,5 +155,17 @@ public class Snake : MonoBehaviour
         this.enabled=true;
 
     }
-   
+
+    void SpeedUp()
+    {
+        Debug.Log("SpeedUp");
+        Invoke(nameof(SpeedDown), 3.0f);
+
+    }
+
+    void SpeedDown()
+    {
+        Debug.Log("SpeedDown");
+    }
+
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Shield : MonoBehaviour
 {
-    public Snake2 snake2; 
     public Collider2D gridArea;
     private void Start()
     {
@@ -29,6 +28,6 @@ public class Shield : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         RandomizePosition();
-       // snake2.foodSpeed();
+
     }
 }
