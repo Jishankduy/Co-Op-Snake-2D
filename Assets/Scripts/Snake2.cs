@@ -15,10 +15,13 @@ public class Snake2 : MonoBehaviour
     public int initialSize = 4;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
+    GameObject shield;
 
 
     private void Start()
     {
+        shield = transform.Find("ShieldSprite").gameObject;
+        DeactivateShield();
         ResetState();
     }
 
@@ -97,6 +100,11 @@ public class Snake2 : MonoBehaviour
             Grow();
         }
     }
+    bool HasShield()
+    {
+        return shield.activeSelf;
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -113,8 +121,37 @@ public class Snake2 : MonoBehaviour
         if (other.gameObject.CompareTag("PoisonFood"))
         {
             LossGrow();
-            count = count - 1;
+            if (HasShield())
+            {
+                DeactivateShield();
+                Debug.Log("appun hai");
+            }
+            else
+            {
+                if (count - 1 > 0)
+                {
+                    count = count - 1;
+                }
+                else
+                    count = 0;
+                SetCountText();
+            }
+        }
+
+        if (other.gameObject.CompareTag("ExtraFood"))
+        {
+            Grow();
+            count = count + 3;
             SetCountText();
+
+        }
+        if (other.gameObject.CompareTag("Speed"))
+        {
+            SpeedUp();
+        }
+        if (other.gameObject.CompareTag("Shield"))
+        {
+            ActivateShield();
         }
     }
 
@@ -142,8 +179,21 @@ public class Snake2 : MonoBehaviour
         
     }
 
-   // public void foodSpeed(){
-     //   this.fixedDeltaTime = 0.07f;
-   // }
-   
+    void SpeedUp()
+    {
+        direction *= 2.0f;
+        Debug.Log("SpeedUp");
+    }
+
+    void ActivateShield()
+    {
+        shield.SetActive(true);
+        Invoke(nameof(DeactivateShield), 7.0f);
+    }
+
+    void DeactivateShield()
+    {
+        shield.SetActive(false);
+    }
+
 }

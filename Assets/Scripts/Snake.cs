@@ -15,45 +15,32 @@ public class Snake : MonoBehaviour
     public int initialSize = 4;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
-    //public float Speed;
+    GameObject shield;
     
 
-    private void Start()
+    public void Start()
     {
-       
+        shield = transform.Find("ShieldSprite").gameObject;
+        DeactivateShield();
         ResetState();
     }
 
     private void Update()
     {
-        // Only allow turning up or down while moving in the x-axis
-        if (direction.x != 0f)
-        {
-            if (Input.GetKeyDown(KeyCode.W)) {
-                direction = Vector2.up;
-            } else if (Input.GetKeyDown(KeyCode.S)) {
-                direction = Vector2.down;
-            }
-        }
-        // Only allow turning left or right while moving in the y-axis
-        else if (direction.y != 0f)
-        {
-            if (Input.GetKeyDown(KeyCode.D)) {
-                direction = Vector2.right;
-            } else if (Input.GetKeyDown(KeyCode.A)) {
-                direction = Vector2.left;
-            }
-        }
+
+        Movement();
         
-        //Time.fixedDeltaTime = 1;
+
     }
 
     private void FixedUpdate()
     {
+        
         // Set each segment's position to be the same as the one it follows. We
         // must do this in reverse order so the position is set to the previous
         // position, otherwise they will all be stacked on top of each other.
-        for (int i = segments.Count - 1; i > 0; i--) {
+        for (int i = segments.Count - 1; i > 0; i--)
+        {
             segments[i].position = segments[i - 1].position;
         }
 
@@ -63,6 +50,35 @@ public class Snake : MonoBehaviour
         float y = Mathf.Round(transform.position.y) + direction.y;
 
         transform.position = new Vector2(x, y);
+    }
+
+    void Movement()
+    {
+        // Only allow turning up or down while moving in the x-axis
+        if (direction.x != 0f)
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                direction = Vector2.up;
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                direction = Vector2.down;
+            }
+        }
+        // Only allow turning left or right while moving in the y-axis
+        else if (direction.y != 0f)
+        {
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                direction = Vector2.right;
+            }
+            else if (Input.GetKeyDown(KeyCode.A))
+            {
+                direction = Vector2.left;
+            }
+
+        }
     }
 
     public void Grow()
@@ -103,6 +119,11 @@ public class Snake : MonoBehaviour
         }
     }
 
+    bool HasShield()
+    {
+        return shield.activeSelf;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Food")) {
@@ -117,8 +138,23 @@ public class Snake : MonoBehaviour
         if (other.gameObject.CompareTag("PoisonFood"))
         {
             LossGrow();
-            count = count - 1;
-            SetCountText();
+            if (HasShield())
+            {
+                DeactivateShield();
+                Debug.Log("appun hai");
+            }
+            else
+            {
+                if (count - 1 > 0)
+                {
+                    count = count - 1;
+                }
+                else
+                    count = 0;
+                SetCountText();
+            }
+
+            
         }
 
         if (other.gameObject.CompareTag("ExtraFood"))
@@ -131,6 +167,11 @@ public class Snake : MonoBehaviour
         if (other.gameObject.CompareTag("Speed"))
         {
             SpeedUp();
+        }
+
+        if (other.gameObject.CompareTag("Shield"))
+        {
+            ActivateShield();
         }
 
     }
@@ -158,14 +199,21 @@ public class Snake : MonoBehaviour
 
     void SpeedUp()
     {
+        direction *= 2.0f;
         Debug.Log("SpeedUp");
-        Invoke(nameof(SpeedDown), 3.0f);
+        
+
 
     }
 
-    void SpeedDown()
+    void ActivateShield()
     {
-        Debug.Log("SpeedDown");
+        shield.SetActive(true);
+        Invoke(nameof(DeactivateShield), 7.0f);
     }
 
+    void DeactivateShield()
+    {
+        shield.SetActive(false);
+    }
 }
